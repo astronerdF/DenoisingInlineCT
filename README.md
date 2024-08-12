@@ -8,5 +8,7 @@ Clone the repository and install the package:
 
 ```bash
 git clone https://github.com/astronerdF/Noise2Noise.git
-cd noise2noise-denoising
-pip install -e .
+pip install -e .``` 
+
+
+
