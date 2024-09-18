@@ -27,15 +27,13 @@ def clear_line():
     print('\r{}'.format(' ' * 80), end='\r')
 
 
-def progress_bar(batch_idx, num_batches, report_interval, train_loss):
+def progress_bar(batch_idx, num_batches, train_loss):
     """Neat progress bar to track training."""
-
-    dec = int(np.ceil(np.log10(num_batches)))
-    bar_size = 21 + dec
-    progress = (batch_idx % report_interval) / report_interval
-    fill = int(progress * bar_size) + 1
-    print('\rBatch {:>{dec}d} [{}{}] Train loss: {:>1.5f}'.format(batch_idx + 1, '=' * fill + '>', ' ' * (bar_size - fill), train_loss, dec=str(dec)), end='')
-
+    progress = (batch_idx + 1) / num_batches
+    bar_size = 30  # Adjust the bar size as needed
+    fill = int(progress * bar_size)
+    print('\rBatch {:d}/{:d} [{}{}] Train loss: {:>1.5f}'.format(
+        batch_idx + 1, num_batches, '=' * fill + '>', ' ' * (bar_size - fill), train_loss), end='')
 
 def time_elapsed_since(start):
     """Computes elapsed time since start."""

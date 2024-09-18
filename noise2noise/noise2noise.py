@@ -238,14 +238,15 @@ class Noise2Noise(object):
 
         self._print_params()
         num_batches = len(train_loader)
-        assert num_batches % self.p.report_interval == 0, 'Report interval must divide total number of batches'
+        # Remove the assertion below
+        # assert num_batches % self.p.report_interval == 0, 'Report interval must divide total number of batches'
 
         # Dictionaries of tracked stats
         stats = {'noise_type': self.p.noise_type,
-                 'noise_param': self.p.noise_param,
-                 'train_loss': [],
-                 'valid_loss': [],
-                 'valid_psnr': []}
+                'noise_param': self.p.noise_param,
+                'train_loss': [],
+                'valid_loss': [],
+                'valid_psnr': []}
 
         # Main training loop
         train_start = datetime.now()
@@ -261,7 +262,7 @@ class Noise2Noise(object):
             # Minibatch SGD
             for batch_idx, (source, target) in enumerate(train_loader):
                 batch_start = datetime.now()
-                progress_bar(batch_idx, num_batches, self.p.report_interval, loss_meter.val)
+                progress_bar(batch_idx, num_batches, loss_meter.val)
 
                 if self.use_cuda:
                     source = source.cuda()
@@ -280,7 +281,7 @@ class Noise2Noise(object):
 
                 # Report/update statistics
                 time_meter.update(time_elapsed_since(batch_start)[1])
-                if (batch_idx + 1) % self.p.report_interval == 0 and batch_idx:
+                if ((batch_idx + 1) % self.p.report_interval == 0 and batch_idx) or (batch_idx + 1 == num_batches):
                     show_on_report(batch_idx, num_batches, loss_meter.avg, time_meter.avg)
                     train_loss_meter.update(loss_meter.avg)
                     loss_meter.reset()
@@ -292,6 +293,7 @@ class Noise2Noise(object):
 
         train_elapsed = time_elapsed_since(train_start)[0]
         print('Training done! Total elapsed time: {}\n'.format(train_elapsed))
+
 
 
 class HDRLoss(nn.Module):
